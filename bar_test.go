@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:45:28
- * @ LastEditTime: 2020-07-29 13:52:29
+ * @ LastEditTime: 2020-07-29 14:00:14
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar_test.go
@@ -19,8 +19,8 @@ func TestBar(t *testing.T) {
 	go b.RunBar()
 	for i := int64(0); i <= 150; i++ {
 		b.Cur <- CurrentStep{
-			cur:     i,
-			message: fmt.Sprintf("step %v", i),
+			Cur:     i,
+			Message: fmt.Sprintf("step %v", i),
 		}
 	}
 

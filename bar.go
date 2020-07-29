@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:29:54
- * @ LastEditTime: 2020-07-29 13:52:11
+ * @ LastEditTime: 2020-07-29 14:02:11
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar.go
@@ -20,9 +20,9 @@ var (
 
 // CurrentStep current step information
 type CurrentStep struct {
-	cur     int64
-	message string
-	err     error
+	Cur     int64
+	Message string
+	Err     error
 }
 
 // Bar bar instance
@@ -71,14 +71,12 @@ Loop:
 	for {
 		select {
 		case i := <-bar.Cur:
-			if i.err != nil {
-				bar.Play(i.cur, i.err.Error())
-				bar.Done <- i.err
-
+			if i.Err != nil {
+				bar.Play(i.Cur, i.Err.Error())
+				bar.Done <- i.Err
 			}
-			bar.Play(i.cur, i.message)
-			if i.cur == bar.total {
-
+			bar.Play(i.Cur, i.Message)
+			if i.Cur == bar.total {
 				bar.Done <- nil
 				break Loop
 			}
