@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:29:54
- * @ LastEditTime: 2020-07-29 18:30:19
+ * @ LastEditTime: 2020-07-29 18:34:20
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar.go
@@ -61,9 +61,11 @@ func (bar *Bar) Play(cur int64, message string) {
 	last := bar.percent
 	bar.percent = bar.getPercent()
 	if bar.percent != last && bar.percent%2 == 0 {
+		var rate string
 		for i := 0; i < int(bar.percent/2); i++ {
-			bar.rate += bar.graph
+			rate += bar.graph
 		}
+		bar.rate = rate
 	}
 	fmt.Printf("\r[%-50s]%3d%% %v", bar.rate, bar.percent, message)
 }
