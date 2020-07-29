@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:29:54
- * @ LastEditTime: 2020-07-29 18:39:42
+ * @ LastEditTime: 2020-07-29 18:46:58
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar.go
@@ -20,9 +20,10 @@ var (
 
 // CurrentStep current step information
 type CurrentStep struct {
-	Cur     int64
-	Message string
-	Err     error
+	Cur      int64
+	Message  string
+	Err      error
+	IsReturn bool
 }
 
 // Bar bar instance
@@ -56,7 +57,7 @@ func (bar *Bar) getPercent() int64 {
 }
 
 // Play play bar
-func (bar *Bar) Play(cur int64, message string) {
+func (bar *Bar) Play(cur int64, message string, isReturn bool) {
 	bar.cur = cur
 	last := bar.percent
 	bar.percent = bar.getPercent()
@@ -73,7 +74,12 @@ func (bar *Bar) Play(cur int64, message string) {
 		}
 		bar.rate = rate
 	}
-	fmt.Printf("\r[%-50s]%3d%% %v", bar.rate, bar.percent, message)
+	if isReturn {
+		fmt.Println(fmt.Sprintf("\r[%-50s]%3d%% %v", bar.rate, bar.percent, message))
+	} else {
+		fmt.Printf("\r[%-50s]%3d%% %v", bar.rate, bar.percent, message)
+	}
+
 }
 
 // RunBar run bar instance
@@ -83,10 +89,10 @@ Loop:
 		select {
 		case i := <-bar.Cur:
 			if i.Err != nil {
-				bar.Play(i.Cur, i.Err.Error())
+				bar.Play(i.Cur, i.Err.Error(), i.IsReturn)
 				bar.Terminate <- i.Err
 			} else {
-				bar.Play(i.Cur, i.Message)
+				bar.Play(i.Cur, i.Message, i.IsReturn)
 				if i.Cur == bar.total {
 					bar.Done <- 1
 				}
