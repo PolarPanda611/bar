@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:29:54
- * @ LastEditTime: 2020-07-29 18:34:20
+ * @ LastEditTime: 2020-07-29 18:39:42
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar.go
@@ -60,10 +60,16 @@ func (bar *Bar) Play(cur int64, message string) {
 	bar.cur = cur
 	last := bar.percent
 	bar.percent = bar.getPercent()
-	if bar.percent != last && bar.percent%2 == 0 {
+	if bar.percent != last {
 		var rate string
-		for i := 0; i < int(bar.percent/2); i++ {
-			rate += bar.graph
+		if bar.percent%2 == 0 {
+			for i := 0; i < int(bar.percent/2); i++ {
+				rate += bar.graph
+			}
+		} else {
+			for i := 0; i < int((bar.percent-1)/2); i++ {
+				rate += bar.graph
+			}
 		}
 		bar.rate = rate
 	}
