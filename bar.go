@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:29:54
- * @ LastEditTime: 2020-07-29 15:02:14
+ * @ LastEditTime: 2020-07-29 15:39:18
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar.go
@@ -106,6 +106,7 @@ func NewBar(start, total int64) *Bar {
 	var b Bar
 	b.NewOption(start, total)
 	b.Cur = make(chan CurrentStep)
+	b.Terminate = make(chan error)
 	go b.RunBar()
 	return &b
 }
