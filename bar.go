@@ -1,7 +1,7 @@
 /**
  * @ Author: Daniel Tan
  * @ Date: 2020-07-29 13:29:54
- * @ LastEditTime: 2020-07-29 14:02:11
+ * @ LastEditTime: 2020-07-29 15:02:14
  * @ LastEditors: Daniel Tan
  * @ Description:
  * @ FilePath: /bar/bar.go
@@ -33,8 +33,9 @@ type Bar struct {
 	rate    string //进度条
 	graph   string //显示符号
 
-	Cur  chan CurrentStep
-	Done chan error
+	Cur       chan CurrentStep
+	Done      chan int
+	Terminate chan error
 }
 
 // NewOption init start and total
@@ -73,17 +74,21 @@ Loop:
 		case i := <-bar.Cur:
 			if i.Err != nil {
 				bar.Play(i.Cur, i.Err.Error())
-				bar.Done <- i.Err
+				bar.Terminate <- i.Err
+			} else {
+				bar.Play(i.Cur, i.Message)
+				if i.Cur == bar.total {
+					bar.Done <- 1
+				}
 			}
-			bar.Play(i.Cur, i.Message)
-			if i.Cur == bar.total {
-				bar.Done <- nil
-				break Loop
-			}
-		case err := <-bar.Done:
+		case <-bar.Done:
+			bar.Finish(nil)
+			break Loop
+		case err := <-bar.Terminate:
 			bar.Finish(err)
 			break Loop
 		}
+
 	}
 }
 
@@ -101,6 +106,7 @@ func NewBar(start, total int64) *Bar {
 	var b Bar
 	b.NewOption(start, total)
 	b.Cur = make(chan CurrentStep)
+	go b.RunBar()
 	return &b
 }
 
